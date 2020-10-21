@@ -10,7 +10,33 @@ repositories {
     mavenCentral()
 }
 
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
+ext {
+    swagger_annotations_version = "1.5.22"
+    jackson_version = "2.10.3"
+    jackson_databind_version = "2.10.3"
+    jackson_databind_nullable_version = "0.2.1"
+    spring_web_version = "4.3.9.RELEASE"
+    jodatime_version = "2.9.9"
+    junit_version = "4.13"
+}
+
 dependencies {
+    implementation "io.swagger:swagger-annotations:$swagger_annotations_version"
+    implementation "com.google.code.findbugs:jsr305:3.0.2"
+    implementation "org.springframework:spring-web:$spring_web_version"
+    implementation "com.fasterxml.jackson.core:jackson-core:$jackson_version"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_databind_version"
+    implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:$jackson_version"
+    implementation "org.openapitools:jackson-databind-nullable:$jackson_databind_nullable_version"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
+    implementation "javax.validation:validation-api:2.0.0.Final"
+
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
@@ -43,7 +69,7 @@ task buildPetStoreJavaClient(type: org.openapitools.generator.gradle.plugin.task
     ]
 }
 
-task generateCode(type: Copy, dependsOn: ['buildPetStoreJavaClient']) {
+task copyDocs(type: Copy, dependsOn: ['buildPetStoreJavaClient']) {
 
     def srcPath = "$buildDir/java-client"
     def targetPath = "$rootDir/docs"
@@ -55,7 +81,7 @@ task generateCode(type: Copy, dependsOn: ['buildPetStoreJavaClient']) {
 }
 
 // code will be generated during compilation
-compileJava.dependsOn(generateCode)
+compileJava.dependsOn(copyDocs)
 
 
 // attach the generated folder as source for this project
