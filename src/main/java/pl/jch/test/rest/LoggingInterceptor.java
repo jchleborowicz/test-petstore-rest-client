@@ -19,13 +19,14 @@ public class LoggingInterceptor implements ClientHttpRequestInterceptor {
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
             throws IOException {
-        log.info("Request body: {}", new String(body, StandardCharsets.UTF_8));
+        log.info("API call: {}, Request body: {}", request.getURI(), new String(body, StandardCharsets.UTF_8));
 
         final ClientHttpResponse response = execution.execute(request, body);
 
         final InputStreamReader responseReader = new InputStreamReader(response.getBody(), StandardCharsets.UTF_8);
 
-        log.info(new BufferedReader(responseReader).lines().collect(joining("\n")));
+        final String responseBody = new BufferedReader(responseReader).lines().collect(joining("\n"));
+        log.info("API response status: {}, Response body: {}", response.getStatusCode(), responseBody);
 
         return response;
     }
